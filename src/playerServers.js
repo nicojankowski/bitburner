@@ -150,26 +150,25 @@ export async function main(ns) {
       targetRam = Math.min(targetRam, settings.maxGbRam)
 
       purchasedServers = getPurchasedServers(ns)
-        if (targetRam > ns.getServerMaxRam(purchasedServers[0])) {
-          if (ns.getServerMoneyAvailable('home') * settings.totalMoneyAllocation >= targetRam * settings.gbRamCost) {
-          
-            let myOldUUID = purchasedServers[0].substring(12,purchasedServers[0].length)
-            let hostname = `pserv-${targetRam}-${myOldUUID}`
+      if (targetRam > ns.getServerMaxRam(purchasedServers[0])) {
+        if (ns.getServerMoneyAvailable('home') * settings.totalMoneyAllocation >= targetRam * settings.gbRamCost) {
 
-            await ns.killall(purchasedServers[0])
-            await ns.sleep(10)
-            let serverDeleted = await ns.deleteServer(purchasedServers[0])
+          let myOldUUID = purchasedServers[0].substring(12,purchasedServers[0].length)
+          let hostname = `pserv-${targetRam}-${myOldUUID}`
 
-             if (serverDeleted) {
-              hostname = await ns.purchaseServer(hostname, targetRam)
+          await ns.killall(purchasedServers[0])
+          await ns.sleep(10)
+          let serverDeleted = await ns.deleteServer(purchasedServers[0])
 
-              if (hostname) {
-                ns.tprint(`[${localeHHMMSS()}] Upgraded: ${purchasedServers[0]} into server: ${hostname} (${targetRam} GB)`)
+           if (serverDeleted) {
+            hostname = await ns.purchaseServer(hostname, targetRam)
 
-                purchasedServers[0] = hostname
-                updateServer(ns, serverMap, hostname)
-                didChange = true
-              }
+            if (hostname) {
+              ns.tprint(`[${localeHHMMSS()}] Upgraded: ${purchasedServers[0]} into server: ${hostname} (${targetRam} GB)`)
+
+              purchasedServers[0] = hostname
+              updateServer(ns, serverMap, hostname)
+              didChange = true
             }
           }
         }
